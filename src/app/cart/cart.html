@@ -1,0 +1,29 @@
+<div class="cart-page">
+  <div class="top-bar">
+    <h1>Sepetim</h1>
+    <a routerLink="/products" class="back-link">← Ürünlere Dön</a>
+  </div>
+
+  @if (cart() && cart()!.items.length > 0) {
+    <div class="cart-list">
+      @for (item of cart()!.items; track item.productId) {
+        <div class="cart-item">
+          <div class="info">
+            <h3>{{ item.productName }}</h3>
+            <p>{{ item.price | number:'1.2-2' }} ₺ x {{ item.quantity }}</p>
+          </div>
+          <div class="item-total">
+            {{ (item.price * item.quantity) | number:'1.2-2' }} ₺
+          </div>
+          <button (click)="removeItem(item.productId)">Kaldır</button>
+        </div>
+      }
+    </div>
+
+    <div class="cart-summary">
+      <h2>Toplam: {{ total() | number:'1.2-2' }} ₺</h2>
+    </div>
+  } @else {
+    <p class="empty">Sepetiniz boş.</p>
+  }
+</div>

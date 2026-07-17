@@ -1,0 +1,21 @@
+<div class="login-container">
+  <form (ngSubmit)="onSubmit()">
+    <h2>Giriş Yap</h2>
+
+    <label>E-posta</label>
+    <input type="email" [(ngModel)]="email" name="email" required />
+
+    <label>Şifre</label>
+    <input type="password" [(ngModel)]="password" name="password" required />
+
+    <button type="submit">Giriş Yap</button>
+
+    @if (errorMessage()) {
+      <p class="error">{{ errorMessage() }}</p>
+    }
+
+    <p class="switch">
+      Üyeliğiniz yok mu? <a routerLink="/register">Üye Ol</a>
+    </p>
+  </form>
+</div>

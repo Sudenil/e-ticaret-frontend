@@ -1,0 +1,50 @@
+<div class="page-wrapper">
+  <nav class="navbar">
+    <div class="logo">VakıfShop</div>
+
+    <div class="nav-categories">
+      @for (cat of categories(); track cat) {
+        <span
+          class="nav-link"
+          [class.active]="selectedCategory() === cat"
+          (click)="selectCategory(cat)"
+        >
+          {{ cat }}
+        </span>
+      }
+    </div>
+
+    <div class="nav-right">
+      <div class="account" (click)="toggleAccountMenu()">
+        👤 {{ customerName }}
+        @if (showAccountMenu()) {
+          <div class="account-dropdown">
+            <button (click)="logout()">Çıkış Yap</button>
+          </div>
+        }
+      </div>
+      <a routerLink="/cart" class="cart-link">🛒 Sepetim</a>
+    </div>
+  </nav>
+
+  <div class="products-page">
+    @if (message()) {
+      <p class="toast">{{ message() }}</p>
+    }
+
+    <div class="product-grid">
+      @for (product of filteredProducts(); track product.id) {
+        <div class="product-card">
+          <img [src]="product.imageUrl" [alt]="product.name" class="product-image" />
+          <h3>{{ product.name }}</h3>
+          <p class="price">{{ product.price | number:'1.2-2' }} ₺</p>
+          <button (click)="addToCart(product)">Sepete Ekle</button>
+        </div>
+      }
+    </div>
+
+    @if (filteredProducts().length === 0) {
+      <p class="empty">Bu kategoride ürün bulunamadı.</p>
+    }
+  </div>
+</div>
