@@ -1,50 +1,269 @@
 <div class="page-wrapper">
-  <nav class="navbar">
-    <div class="logo">VakıfShop</div>
 
-    <div class="nav-categories">
-      @for (cat of categories(); track cat) {
-        <span
-          class="nav-link"
-          [class.active]="selectedCategory() === cat"
-          (click)="selectCategory(cat)"
-        >
-          {{ cat }}
-        </span>
-      }
+  <!-- Navbar -->
+  <nav class="navbar">
+
+    <div class="logo">
+      VakıfShop
     </div>
 
     <div class="nav-right">
+
+      <input
+        type="text"
+        class="search-box"
+        placeholder="🔍 Ürün ara..."
+        [value]="searchQuery()"
+        (input)="searchQuery.set($any($event.target).value)" />
+
       <div class="account" (click)="toggleAccountMenu()">
+
         👤 {{ customerName }}
-        @if (showAccountMenu()) {
+
+        @if(showAccountMenu()){
+
           <div class="account-dropdown">
-            <button (click)="logout()">Çıkış Yap</button>
+
+            <button (click)="logout()">
+              Çıkış Yap
+            </button>
+
           </div>
+
         }
+
       </div>
-      <a routerLink="/cart" class="cart-link">🛒 Sepetim</a>
+
+      <a routerLink="/favorites" class="cart-link">
+           <span class="icon">❤️</span>
+           <span>Favorilerim</span>
+
+      </a>
+
+  <a routerLink="/cart" class="cart-link">
+  <span class="cart-icon-wrapper">
+    🛒
+    @if (cartItemCount() > 0) {
+      <span class="cart-badge">{{ cartItemCount() }}</span>
+    }
+  </span>
+  Sepetim
+</a>
+
     </div>
+
   </nav>
 
-  <div class="products-page">
-    @if (message()) {
-      <p class="toast">{{ message() }}</p>
-    }
+  <!-- Sayfa -->
 
-    <div class="product-grid">
-      @for (product of filteredProducts(); track product.id) {
-        <div class="product-card">
-          <img [src]="product.imageUrl" [alt]="product.name" class="product-image" />
-          <h3>{{ product.name }}</h3>
-          <p class="price">{{ product.price | number:'1.2-2' }} ₺</p>
-          <button (click)="addToCart(product)">Sepete Ekle</button>
-        </div>
+  <div class="products-page">
+
+    <!-- Sol Filtre -->
+
+    <aside class="filter-panel">
+
+      <div class="filter-section">
+
+        <h3>KATEGORİLER</h3>
+
+        @for(cat of categories(); track cat){
+
+          <label class="filter-item">
+
+            <input
+              type="radio"
+              name="category"
+              [checked]="selectedCategory()===cat"
+              (change)="selectCategory(cat)">
+
+            {{cat}}
+
+          </label>
+
+        }
+
+      </div>
+
+      @if(selectedCategory()=='Giyim'){
+
+      <div class="filter-section">
+
+        <h3>CİNSİYET</h3>
+
+        <label class="filter-item">
+
+          <input
+            type="radio"
+            name="gender"
+            [checked]="selectedSubCategory()=='Kadın'"
+            (change)="selectSubCategory('Kadın')">
+
+          Kadın
+
+        </label>
+
+        <label class="filter-item">
+
+          <input
+            type="radio"
+            name="gender"
+            [checked]="selectedSubCategory()=='Erkek'"
+            (change)="selectSubCategory('Erkek')">
+
+          Erkek
+
+        </label>
+
+      </div>
+
+      <div class="filter-section">
+
+        <h3>ÜRÜN TÜRÜ</h3>
+
+        @for(type of types(); track type){
+
+          <label class="filter-item">
+
+            <input
+              type="radio"
+              name="type"
+              [checked]="selectedType()==type"
+              (change)="selectType(type)">
+
+            {{type}}
+
+          </label>
+
+        }
+
+      </div>
+
+      <div class="filter-section">
+
+        <h3>MODEL</h3>
+
+        @for(style of styles(); track style){
+
+          <label class="filter-item">
+
+            <input
+              type="radio"
+              name="style"
+              [checked]="selectedStyle()==style"
+              (change)="selectStyle(style)">
+
+            {{style}}
+
+          </label>
+
+        }
+
+      </div>
+
       }
+
+    </aside>
+
+    <!-- Sağ Taraf -->
+
+    <div class="products-content">
+
+      @if(message()){
+
+        <p class="toast">
+
+          {{message()}}
+
+        </p>
+
+      }
+
+      <div class="product-grid">
+                @for (product of filteredProducts(); track product.id) {
+
+          <div class="product-card">
+
+            <button
+              class="favorite-btn"
+              [class.active]="isFavorite(product.id)"
+              (click)="toggleFavorite(product); $event.stopPropagation()">
+
+              {{ isFavorite(product.id) ? '❤️' : '🤍' }}
+
+            </button>
+
+            <img
+              [src]="'/images/' + product.imageUrl"
+              [alt]="product.name"
+              class="product-image" />
+
+            <h3>{{ product.name }}</h3>
+
+            <p class="price">
+              {{ product.price | number:'1.2-2' }} ₺
+            </p>
+
+            @if(product.sizes && product.sizes.length > 0){
+
+              <div class="size-selector">
+
+                @for(size of product.sizes; track size){
+
+                  <span
+                    class="size-option"
+                    [class.selected]="selectedSizes()[product.id] === size"
+                    (click)="selectSize(product.id, size)">
+
+                    {{ size }}
+
+                  </span>
+
+                }
+
+              </div>
+
+            }
+
+            <div class="quantity-selector">
+
+              <button (click)="decreaseQuantity(product.id)">
+                −
+              </button>
+
+              <span>
+
+                {{ getQuantity(product.id) }}
+
+              </span>
+
+              <button (click)="increaseQuantity(product.id)">
+                +
+              </button>
+
+            </div>
+
+            <button (click)="addToCart(product)">
+              Sepete Ekle
+            </button>
+
+          </div>
+
+        }
+
+      </div>
+
+      @if(filteredProducts().length===0){
+
+        <p class="empty">
+
+          Bu kategoride ürün bulunamadı.
+
+        </p>
+
+      }
+
     </div>
 
-    @if (filteredProducts().length === 0) {
-      <p class="empty">Bu kategoride ürün bulunamadı.</p>
-    }
   </div>
+
 </div>

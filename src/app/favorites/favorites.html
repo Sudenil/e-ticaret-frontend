@@ -1,0 +1,42 @@
+<div class="favorites-container">
+
+  <div class="top-bar">
+    <h2>❤️ Favorilerim</h2>
+    <a routerLink="/products" class="back-link">← Ürünlere Dön</a>
+  </div>
+
+  @if (favorites().length === 0) {
+
+    <p>Henüz favorilere ürün eklemediniz.</p>
+
+  } @else {
+
+    @for (product of favorites(); track product.id) {
+
+      <div class="favorite-item">
+
+        <img
+          [src]="'images/' + product.imageUrl"
+          [alt]="product.name"
+          class="product-image"
+        />
+
+        <div class="product-info">
+          <h3>{{ product.name }}</h3>
+          <p>{{ product.description }}</p>
+          <strong>{{ product.price }} ₺</strong>
+        </div>
+
+        <button
+          class="remove-btn"
+          (click)="removeFavorite(product.id)">
+          Favoriden Kaldır
+        </button>
+
+      </div>
+
+    }
+
+  }
+
+</div>

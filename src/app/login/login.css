@@ -16,6 +16,11 @@ form {
   width: 300px;
 }
 
+form h1,
+form h2 {
+  color: #F0A500;
+}
+
 label {
   margin-top: 1rem;
   font-size: 0.9rem;
@@ -31,19 +36,32 @@ input {
 button {
   margin-top: 1.5rem;
   padding: 0.7rem;
-  background: #6f42c1;
+  background: #F0A500;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: bold;
 }
 
 button:hover {
-  background: #5a34a0;
+  background: #C98600;
 }
 
 .error {
   color: red;
   margin-top: 1rem;
   font-size: 0.85rem;
+}
+
+.switch {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.switch a {
+  color: #111111;
+  text-decoration: none;
+  font-weight: bold;
 }

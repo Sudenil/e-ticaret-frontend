@@ -4,25 +4,64 @@
     <a routerLink="/products" class="back-link">← Ürünlere Dön</a>
   </div>
 
-  @if (cart() && cart()!.items.length > 0) {
-    <div class="cart-list">
-      @for (item of cart()!.items; track item.productId) {
-        <div class="cart-item">
-          <div class="info">
-            <h3>{{ item.productName }}</h3>
-            <p>{{ item.price | number:'1.2-2' }} ₺ x {{ item.quantity }}</p>
+  @if (orderConfirmed()) {
+    <div class="order-confirmed">
+      <h2>✅ Siparişiniz Alındı!</h2>
+      <p>Teşekkür ederiz, siparişiniz başarıyla oluşturuldu.</p>
+      <a routerLink="/products" class="back-link">← Ürünlere Dön</a>
+    </div>
+  } @else if (cart() && cart()!.items.length > 0) {
+
+    <div class="cart-body">
+      <div class="cart-list">
+        @for (item of cart()!.items; track item.productId) {
+          <div class="cart-item">
+            <img
+              [src]="'/images/' + item.imageUrl"
+              [alt]="item.productName"
+              class="cart-item-image" />
+
+            <div class="info">
+              <h3>{{ item.productName }}</h3>
+              @if (item.size) {
+                <p class="size-tag">Beden: {{ item.size }}</p>
+              }
+              <p>{{ item.price | number:'1.2-2' }} ₺ x {{ item.quantity }}</p>
+            </div>
+
+            <div class="item-total">
+              {{ (item.price * item.quantity) | number:'1.2-2' }} ₺
+            </div>
+
+            <button (click)="removeItem(item.productId)">Kaldır</button>
           </div>
-          <div class="item-total">
-            {{ (item.price * item.quantity) | number:'1.2-2' }} ₺
-          </div>
-          <button (click)="removeItem(item.productId)">Kaldır</button>
+        }
+      </div>
+
+      <div class="cart-summary-card">
+        <h2>Sepet Özeti</h2>
+
+        <div class="summary-row">
+          <span>Ara Toplam</span>
+          <span>{{ total() | number:'1.2-2' }} ₺</span>
         </div>
-      }
+
+        <div class="summary-row">
+          <span>Kargo Tutarı</span>
+          <span>{{ shipping | number:'1.2-2' }} ₺</span>
+        </div>
+
+        <div class="summary-row summary-total">
+          <span>Toplam</span>
+          <span>{{ (total() + shipping) | number:'1.2-2' }} ₺</span>
+        </div>
+
+        <button class="checkout-btn" (click)="confirmOrder()">
+          Sepeti Onayla
+        </button>
+      </div>
     </div>
 
-    <div class="cart-summary">
-      <h2>Toplam: {{ total() | number:'1.2-2' }} ₺</h2>
-    </div>
   } @else {
     <p class="empty">Sepetiniz boş.</p>
   }

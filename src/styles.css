@@ -1,1 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --color-primary: #F0A500;   /* sarı/altın vurgu */
+  --color-primary-dark: #C98600;
+  --color-text: #111111;      /* siyah metin/logo */
+  --color-text-secondary: #6B6B6B;
+  --color-bg: #FFFFFF;
+  --color-bg-soft: #F7F7F7;
+  --color-border: #E0E0E0;
+}
+
+body {
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}
