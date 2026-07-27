@@ -30,10 +30,22 @@
             </div>
 
             <div class="item-total">
-              {{ (item.price * item.quantity) | number:'1.2-2' }} ₺
-            </div>
+  {{ (item.price * item.quantity) | number:'1.2-2' }} ₺
+</div>
 
-            <button (click)="removeItem(item.productId)">Kaldır</button>
+<div class="item-actions">
+  <button class="remove-btn" (click)="removeItem(item.productId)">
+    Kaldır
+  </button>
+
+  <div class="quantity-control">
+    <button class="qty-btn" (click)="decreaseQuantity(item)">−</button>
+
+    <span class="qty">{{ item.quantity }}</span>
+
+    <button class="qty-btn" (click)="increaseQuantity(item)">+</button>
+  </div>
+</div>
           </div>
         }
       </div>

@@ -89,7 +89,25 @@ body {
 .account-dropdown button:hover {
   background: #b02a37;
 }
+.account-dropdown .dropdown-link {
+  display: block;
+  width: 100%;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+}
 
+.account-dropdown .dropdown-link:hover {
+  background: #b02a37;
+}
 
 
 /* ===========================

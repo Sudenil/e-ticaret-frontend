@@ -70,6 +70,40 @@ export class CartPage implements OnInit {
     });
   }
 
+  increaseQuantity(item: CartItem) {
+    const userJson = localStorage.getItem('loggedInUser');
+    if (!userJson) return;
+    const user = JSON.parse(userJson);
+
+    const newQuantity = item.quantity + 1;
+
+    this.http.put<Cart>(
+      `http://localhost:5281/api/cart/${user.id}/items/${item.productId}`,
+      { quantity: newQuantity }
+    ).subscribe({
+      next: updatedCart => this.cart.set(updatedCart),
+      error: err => console.error(err)
+    });
+  }
+
+  decreaseQuantity(item: CartItem) {
+    if (item.quantity <= 1) return;
+
+    const userJson = localStorage.getItem('loggedInUser');
+    if (!userJson) return;
+    const user = JSON.parse(userJson);
+
+    const newQuantity = item.quantity - 1;
+
+    this.http.put<Cart>(
+      `http://localhost:5281/api/cart/${user.id}/items/${item.productId}`,
+      { quantity: newQuantity }
+    ).subscribe({
+      next: updatedCart => this.cart.set(updatedCart),
+      error: err => console.error(err)
+    });
+  }
+
   total(): number {
     const current = this.cart();
 
@@ -90,16 +124,27 @@ export class CartPage implements OnInit {
 
     if (!current || current.items.length === 0) return;
 
-    const deleteRequests = current.items.map(item =>
-      this.http.delete(
-        `http://localhost:5281/api/cart/${user.id}/items/${item.productId}`
-      )
-    );
+    const orderPayload = {
+      customerId: user.id,
+      items: current.items,
+      shipping: this.shipping
+    };
 
-    forkJoin(deleteRequests).subscribe({
+    this.http.post(`http://localhost:5281/api/order`, orderPayload).subscribe({
       next: () => {
-        this.orderConfirmed.set(true);
-        this.cart.set({ ...current, items: [] });
+        const deleteRequests = current.items.map(item =>
+          this.http.delete(
+            `http://localhost:5281/api/cart/${user.id}/items/${item.productId}`
+          )
+        );
+
+        forkJoin(deleteRequests).subscribe({
+          next: () => {
+            this.orderConfirmed.set(true);
+            this.cart.set({ ...current, items: [] });
+          },
+          error: err => console.error(err)
+        });
       },
       error: err => console.error(err)
     });

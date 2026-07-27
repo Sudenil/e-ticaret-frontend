@@ -27,11 +27,19 @@
           <strong>{{ product.price }} ₺</strong>
         </div>
 
-        <button
-          class="remove-btn"
-          (click)="removeFavorite(product.id)">
-          Favoriden Kaldır
-        </button>
+        <div class="favorite-actions">
+          <button
+            class="remove-btn"
+            (click)="removeFavorite(product.id)">
+            Favorilerden Kaldır
+          </button>
+
+          <button
+            class="add-cart-btn"
+            (click)="addToCart(product)">
+            Sepete Ekle
+          </button>
+        </div>
 
       </div>
 

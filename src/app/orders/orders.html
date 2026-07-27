@@ -1,0 +1,57 @@
+<div class="orders-container">
+
+  <div class="top-bar">
+    <h2>📦 Siparişlerim</h2>
+    <a routerLink="/products" class="back-link">← Ürünlere Dön</a>
+  </div>
+
+  @if (orders().length === 0) {
+
+    <p>Henüz siparişiniz yok.</p>
+
+  } @else {
+
+    @for (order of orders(); track order.id) {
+
+      <div class="order-card">
+
+        <div class="order-header">
+          <span>Sipariş No: {{ order.id }}</span>
+          <span>{{ order.createdAt | date:'dd.MM.yyyy HH:mm' }}</span>
+        </div>
+
+        <div class="order-items">
+          @for (item of order.items; track item.productId) {
+            <div class="order-item">
+              <img
+                [src]="'/images/' + item.imageUrl"
+                [alt]="item.productName"
+                class="order-item-image" />
+
+              <div class="order-item-info">
+                <h4>{{ item.productName }}</h4>
+                @if (item.size) {
+                  <p class="size-tag">Beden: {{ item.size }}</p>
+                }
+                <p>{{ item.price | number:'1.2-2' }} ₺ x {{ item.quantity }}</p>
+              </div>
+
+              <div class="order-item-total">
+                {{ (item.price * item.quantity) | number:'1.2-2' }} ₺
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="order-footer">
+          <span>Kargo: {{ order.shipping | number:'1.2-2' }} ₺</span>
+          <span class="order-total">Toplam: {{ order.total | number:'1.2-2' }} ₺</span>
+        </div>
+
+      </div>
+
+    }
+
+  }
+
+</div>

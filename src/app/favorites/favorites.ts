@@ -69,4 +69,21 @@ export class Favorites implements OnInit {
 
   }
 
+  addToCart(product: Product) {
+
+    this.http.post(
+      `http://localhost:5281/api/cart/${this.customerId}/items`,
+      {
+        productId: product.id,
+        quantity: 1
+      }
+    ).subscribe({
+      next: () => {
+        // istersen buraya "sepete eklendi" bildirimi ekleyebiliriz
+      },
+      error: err => console.error(err)
+    });
+
+  }
+
 }
